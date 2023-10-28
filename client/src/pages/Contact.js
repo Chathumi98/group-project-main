@@ -23,7 +23,7 @@ const Contact = () => {
             <BiPlanet/> : www.shopmart.lk
           </p>
           <p className="mt-3">
-            <BiLocationPlus/> : Gayan S. Kuara, 
+            <BiLocationPlus/> : Gayan S. Kumara, 
                                 Thalawitiya, 
                                 Parakaduwa
                                 Sri Lanka
