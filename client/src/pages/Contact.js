@@ -1,6 +1,7 @@
 import React from "react";
 import Layout from "./../components/Layout/Layout";
 import { BiLocationPlus, BiMailSend, BiPhoneCall, BiPlanet} from "react-icons/bi";
+import FeedbackForm from "./FeedbackForm";
 
 const Contact = () => {
   return (
@@ -8,6 +9,7 @@ const Contact = () => {
  <div className="row contactus ">
 
 <div className="col-md-4">
+          
           <h1 className="bg-success p-2 text-white text-center"style={{ marginTop: "20px"}}>CONTACT US</h1>
           <h5 className="text-justify mt-2">
           Call us at any time for questions and product information;
@@ -28,6 +30,9 @@ const Contact = () => {
                                 Parakaduwa
                                 Sri Lanka
           </p>
+
+       
+          
         </div>
 
 
@@ -43,8 +48,11 @@ const Contact = () => {
         </div>
        
       </div>
+      <FeedbackForm/>
     </Layout>
   );
 };
+
+
 
 export default Contact;

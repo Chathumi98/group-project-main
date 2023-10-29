@@ -42,6 +42,12 @@ const AdminMenu = () => {
           >
             Gift Card
           </NavLink>
+          <NavLink
+            to="/dashboard/admin/feedback"
+            className="list-group-item list-group-item-action"
+          >
+            FeedBack
+          </NavLink>
         </div>
       </div>
     </>

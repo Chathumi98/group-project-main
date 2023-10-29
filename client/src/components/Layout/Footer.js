@@ -24,7 +24,7 @@ const Footer = () => {
             <div>
                 <input type='text' 
                     required
-                    placeholder="Enter your email..."
+                    placeholder="Enter your Email..."
                     className="custom-input"
                 />
                 <button className="custom-button custom-button:hover">
