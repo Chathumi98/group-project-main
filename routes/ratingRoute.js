@@ -9,19 +9,28 @@ const router = express.Router();
 router.post("/api/v1/submit-rating", async (req, res) => {
   try {
     // Extract data from the request body
-    const { productId , rating } = req.body;
+    const { userId, productId, rating } = req.body;
 
-    // Create a new rating document
-    const newRating = new Rating({
-      productId,
-      rating,
-    });
+    // Check if the user has already rated this product
+    const existingRating = await Rating.findOne({ userId, productId });
 
-    // Save the rating to the database
-    await newRating.save();
+    if (existingRating) {
+      // User has already rated this product, reject the new rating
+      res.status(400).json({ message: "You have already rated this product" });
+    } else {
+      // User hasn't rated this product, create a new rating document
+      const newRating = new Rating({
+        userId,
+        productId,
+        rating,
+      });
 
-    // Respond with a success message
-    res.status(201).json({ message: "Rating created successfully", rating: newRating });
+      // Save the new rating to the database
+      await newRating.save();
+
+      // Respond with a success message
+      res.status(201).json({ message: "Rating created successfully", rating: newRating });
+    }
   } catch (error) {
     // Handle errors
     console.error("Error creating rating:", error);

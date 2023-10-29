@@ -6,91 +6,95 @@ import toast from "react-hot-toast";
 import { useCart } from "../../context/cart";
 import { useAuth } from "../../context/auth";
 import StarRating from "./StarRating";
-
-
 import moment from "moment";
-
 import "../../styles/ProductDetailsStyles.css";
-
 import { useParams, useNavigate } from "react-router-dom";
-import { get } from "mongoose";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [categories, setCategories] = useState([]);
   const [auth, setAuth] = useAuth();
-  const [rating, setRating] = useState({}); // State to track product ratings
-
-  //Related to related products
+  const [rating, setRating] = useState({});
+  const [userRatings, setUserRatings] = useState({}); // Keep track of user's product ratings
   const [cart, setCart] = useCart();
   const [relatedProducts, setRelatedProducts] = useState([]);
-  //var relatedProducts = [];
   const navigate = useNavigate();
 
+  // const getOrders = async () => {
+  //   try {
+  //     const { data } = await axios.get("/api/v1/auth/orders");
+  //     setOrders(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  const getOrders = async () => {
-    try {
-      const { data } = await axios.get("/api/v1/auth/orders");
-      //console.log(data[1].products[0].category);
-      setOrders(data);
-      //getCategoriesfromOrders();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
-  async function getCategoriesfromOrders(){
-    try{
-      let categoryArray = [];
-
-      for(var i=0; i<orders.length; i++){
-        
-        for(var j=0; j<orders[i].products.length; j++){
-          //console.log(orders[i].products[j].category);
-          var categoryId = orders[i].products[j].category;
-
-          if(!categoryArray.includes(categoryId)){
-            categoryArray.push(categoryId);
-          }
-
-        }
-
-      }
-
-      console.log(categoryArray);
-      setCategories(categoryArray);
-      //fetchSimilarProducts(categoryArray);
-      
-      
-      //return ;
-    } catch(error){
-      console.log(error);
-    }
-  }
-
-  
-
-  const fetchSimilarProducts = async () => {
-    try {
-
-      const { data } = await axios.get('/api/v1/product/similar-products', {
-        params: {
-          categoryIds: JSON.stringify(categories),
-        },
-      });
-      
-      console.log('Here 1');
-      console.log(data);
-      setRelatedProducts(data);
-      //relatedProducts = data;
-      //console.log(relatedProducts);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+ 
+ 
+   const getOrders = async () => {
+     try {
+       const { data } = await axios.get("/api/v1/auth/orders");
+       //console.log(data[1].products[0].category);
+       setOrders(data);
+       //getCategoriesfromOrders();
+     } catch (error) {
+       console.log(error);
+     }
+   };
+ 
+   async function getCategoriesfromOrders(){
+     try{
+       let categoryArray = [];
+ 
+       for(var i=0; i<orders.length; i++){
+         
+         for(var j=0; j<orders[i].products.length; j++){
+           //console.log(orders[i].products[j].category);
+           var categoryId = orders[i].products[j].category;
+ 
+           if(!categoryArray.includes(categoryId)){
+             categoryArray.push(categoryId);
+           }
+ 
+         }
+ 
+       }
+ 
+       console.log(categoryArray);
+       setCategories(categoryArray);
+       //fetchSimilarProducts(categoryArray);
+       
+       
+       //return ;
+     } catch(error){
+       console.log(error);
+     }
+   }
+ 
+   
+ 
+   const fetchSimilarProducts = async () => {
+     try {
+ 
+       const { data } = await axios.get('/api/v1/product/similar-products', {
+         params: {
+           categoryIds: JSON.stringify(categories),
+         },
+       });
+       
+       console.log('Here 1');
+       console.log(data);
+       setRelatedProducts(data);
+       //relatedProducts = data;
+       //console.log(relatedProducts);
+     } catch (error) {
+       console.error(error);
+     }
+   };
 
   useEffect(() => {
-    if (auth?.token) getOrders(); 
+    if (auth?.token) getOrders();
   }, [auth?.token]);
 
   useEffect(() => {
@@ -105,6 +109,21 @@ const Orders = () => {
     }
   } , [categories]);
 
+  useEffect(() => {
+    // Create a map of user's ratings for products from orders
+    const userRatingsMap = {};
+
+    orders.forEach((o) => {
+      o.products.forEach((p) => {
+        if (p.rating) {
+          userRatingsMap[p._id] = true;
+        }
+      });
+    });
+
+    setUserRatings(userRatingsMap);
+  }, [orders]);
+
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
@@ -112,21 +131,27 @@ const Orders = () => {
   const handleSubmit = async (event, productId) => {
     event.preventDefault();
 
+    // Check if the user has already rated this product
+    if (userRatings[productId]) {
+      toast.error("You have already rated this product");
+     // return;
+    }
+
+    // Assuming you have access to the userId
+    const userId = auth?.user;
+
     const response = await axios.post('/api/v1/submit-rating', {
+      userId,
       productId,
       rating,
     });
 
     if (response.status === 201) {
       toast.success("Rating submitted Successfully");
-      // Rating submitted successfully!
     } else {
       toast.error("Something went wrong");
-      // Something went wrong!
     }
   };
-
-
 
   return (
     <Layout title={"Your Orders"}>
@@ -163,7 +188,6 @@ const Orders = () => {
                     </tbody>
                   </table>
                   <div className="container">
-
                     {o?.products?.map((p, i) => (
                       <div className="row mb-2 p-3 card flex-row" key={p._id}>
                         <div className="col-md-4">
@@ -186,7 +210,7 @@ const Orders = () => {
                             />
                             <button
                               type="submit"
-                              disabled={rating[p._id]}  // Disable if already rated
+                              disabled={userRatings[p._id]}  // Disable if already rated
                               className="submit-rating-button"
                               style={{
                                 backgroundColor: "#0DC74E",
@@ -197,12 +221,10 @@ const Orders = () => {
                                 cursor: "pointer",
                               }}
                             >
-                              <b>{rating[p._id] ? 'Rated' : 'Submit Rating'}</b>
+                              <b>{userRatings[p._id] ? 'Rated' : 'Submit Rating'}</b>
                             </button>
                           </form>
                         </div>
-
-
                       </div>
                     ))}
                   </div>
