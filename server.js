@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import cors from "cors";
 import gift_voucher from "./routes/gift_voucher.js"
 import feedbackRoutes from "./routes/feedbackRoutes.js";
+import ratingRoute from "./routes/ratingRoute.js";
 
 
 
@@ -36,6 +37,7 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes);
 app.use("/giftVoucher", gift_voucher);
 app.use("/feedback", feedbackRoutes);
+app.use("/", ratingRoute);
 
 //rest api
 app.get("/", (req, res) => {

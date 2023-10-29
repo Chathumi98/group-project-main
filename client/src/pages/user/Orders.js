@@ -5,6 +5,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useCart } from "../../context/cart";
 import { useAuth } from "../../context/auth";
+import StarRating from "./StarRating";
+
 
 import moment from "moment";
 
@@ -17,6 +19,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [categories, setCategories] = useState([]);
   const [auth, setAuth] = useAuth();
+  const [rating, setRating] = useState({}); // State to track product ratings
 
   //Related to related products
   const [cart, setCart] = useCart();
@@ -102,6 +105,27 @@ const Orders = () => {
     }
   } , [categories]);
 
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+  };
+
+  const handleSubmit = async (event, productId) => {
+    event.preventDefault();
+
+    const response = await axios.post('/api/v1/submit-rating', {
+      productId,
+      rating,
+    });
+
+    if (response.status === 201) {
+      toast.success("Rating submitted Successfully");
+      // Rating submitted successfully!
+    } else {
+      toast.error("Something went wrong");
+      // Something went wrong!
+    }
+  };
+
 
 
   return (
@@ -155,6 +179,27 @@ const Orders = () => {
                           <p>{p.name}</p>
                           <p>{p.description.substring(0, 30)}</p>
                           <p>Price : {p.price}</p>
+                          <form key={p._id} onSubmit={(event) => handleSubmit(event, p._id)}>
+                            <StarRating
+                              initialRating={rating}
+                              onRatingChange={handleRatingChange}
+                            />
+                            <button
+                              type="submit"
+                              disabled={rating[p._id]}  // Disable if already rated
+                              className="submit-rating-button"
+                              style={{
+                                backgroundColor: "#0DC74E",
+                                color: "#000",
+                                padding: "1px",
+                                fontSize: "15px",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              <b>{rating[p._id] ? 'Rated' : 'Submit Rating'}</b>
+                            </button>
+                          </form>
                         </div>
 
 
