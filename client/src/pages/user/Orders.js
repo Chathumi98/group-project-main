@@ -134,7 +134,7 @@ const Orders = () => {
     // Check if the user has already rated this product
     if (userRatings[productId]) {
       toast.error("You have already rated this product");
-     // return;
+      return;
     }
 
     // Assuming you have access to the userId

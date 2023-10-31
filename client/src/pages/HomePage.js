@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import Layout from "./../components/Layout/Layout";
 import { AiOutlineReload } from "react-icons/ai";
 import "../styles/Homepage.css";
+import Rating from "../components/Rating";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -106,6 +107,8 @@ const HomePage = () => {
       console.log(error);
     }
   };
+
+  
   return (
     <Layout title={"Traditional Products"}>
 
@@ -201,7 +204,9 @@ const HomePage = () => {
                   </div>
                   <p className="card-text ">
                     {p.description.substring(0, 60)}...
+                    
                   </p>
+                  <Rating productId={p._id} />
                   <div className="card-name-price">
                     <button
                       className="btn btn-success ms-1"
