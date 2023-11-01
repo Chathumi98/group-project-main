@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useCart } from "../context/cart";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/ProductDetailsStyles.css";
+import Rating from "../components/Rating";
 
 import { Canvas, useLoader } from "@react-three/fiber";
 import { MeshWobbleMaterial, OrbitControls, PresentationControls, Environment, ContactShadows } from "@react-three/drei";
@@ -106,17 +107,33 @@ const ProductDetails = () => {
         <div className="col-md-3 product-details-info">
           <h1 className="text-center">Product Details</h1>
           <hr />
-          <h6>Name : {product.name}</h6>
-          <h6>Description : {product.description}</h6>
+          <h6><b>Name : </b>{product.name}</h6>
+          <h6><b>Description :</b> {product.description}</h6>
           <h6>
-            Price :
+            <b>Price : </b>
             {product?.price?.toLocaleString("en-US", {
               style: "currency",
               currency: "USD",
             })}
           </h6>
-          <h6>Category : {product?.category?.name}</h6>
-          <button class="btn btn-warning ms-1"
+          <h6><b>Category :</b> {product?.category?.name}</h6>
+          <Rating productId={product._id} />
+
+          <button
+                    className="btn btn-warning ms-1"
+                    onClick={() => {
+                      setCart([...cart, product]);
+                      localStorage.setItem(
+                        "cart",
+                        JSON.stringify([...cart, product])
+                      );
+                      toast.success("Item Added to cart");
+                    }}
+                  >
+                    ADD TO CART
+                  </button>
+          
+          {/* <button class="btn btn-warning ms-1"
           // onClick={() => {
           //   setCart([...cart, p]);
           //   localStorage.setItem(
@@ -126,7 +143,7 @@ const ProductDetails = () => {
           //   toast.success("Item Added to cart");
           // }}
           >
-            ADD TO CART</button>
+            ADD TO CART</button> */}
         </div>
         <div className="col-md-2">
 
@@ -180,6 +197,7 @@ const ProductDetails = () => {
                 <p className="card-text ">
                   {p.description.substring(0, 60)}...
                 </p>
+                <Rating productId={p._id} />
                 <div className="card-name-price">
                   <button
                     className="btn btn-success ms-1"

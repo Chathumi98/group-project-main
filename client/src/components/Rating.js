@@ -42,7 +42,7 @@ const Rating = ({ productId }) => {
 
   return (
     <div className="average-rating">
-      <p>Ratings :</p> <p className="stars">{renderStars(averageRating)}</p>
+      <p><b>Ratings :</b></p> <p className="stars">{renderStars(averageRating)}</p>
     </div>
   );
 };

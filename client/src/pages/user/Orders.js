@@ -9,6 +9,7 @@ import StarRating from "./StarRating";
 import moment from "moment";
 import "../../styles/ProductDetailsStyles.css";
 import { useParams, useNavigate } from "react-router-dom";
+import Rating from "../../components/Rating";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -265,6 +266,7 @@ const Orders = () => {
                 <p className="card-text ">
                   {p.description.substring(0, 60)}...
                 </p>
+                <Rating productId={p._id} />
                 <div className="card-name-price">
                   <button
                     className="btn btn-success ms-1"

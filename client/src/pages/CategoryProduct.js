@@ -3,6 +3,8 @@ import Layout from "../components/Layout/Layout";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/CategoryProductStyles.css";
 import axios from "axios";
+import Rating from "../components/Rating";
+
 const CategoryProduct = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -52,6 +54,7 @@ const CategoryProduct = () => {
                     <p className="card-text ">
                       {p.description.substring(0, 60)}...
                     </p>
+                    <Rating productId={p._id} />
                     <div className="card-name-price">
                       <button
                         className="btn btn-success ms-1"
