@@ -34,32 +34,3 @@ const StarRating = ({ initialRating, onRatingChange }) => {
 
 export default StarRating;
 
-
-
-// import React, { useState } from 'react';
-
-// const StarRating = ({ rating }) => {
-//  const [ratingState, setRatingState] = useState(rating);
-
-//  const handleClick = (newRating) => {
-//   setRatingState(newRating);
-//  };
-
-// return (
-//   <div className="star-rating">
-//    {[...Array(5)].map((star, index) => {
-//     const isFilled = index < ratingState;
-//     const starIcon = isFilled ? '★' : '☆';
-
-//     return (
-//      <span key={index} onClick={() => handleClick(index + 1)} className={`star ${isFilled ? 'filled' : 'empty'}`} style={{ fontSize: '20px', color: isFilled ? '#F7DF2D' : 'black' }}>{starIcon}</span>
-//     );
-//    })}
-//    <div>
-//      <p>Rating: {parseInt(ratingState)}</p>
-//    </div>
-//   </div>
-//  );
-// };
-
-// export default StarRating;

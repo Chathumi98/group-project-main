@@ -72,35 +72,4 @@ router.get('/api/v1/product/product-ratings/:productId', async (req, res) => {
 
 
 
-// router.get("/api/v1/product-ratings", async (req, res) => {
-//   try {
-//     // Extract the productId from the request query
-//     const { productId } = req.query;
-
-//     // Fetch all ratings for the given productId
-//     const ratings = await Rating.find({ productId });
-
-//     if (ratings.length === 0) {
-//       // Handle the case where there are no ratings for the product
-//       res.json({ averageRating: 0 }); // You can set the default average rating to 0 or any other value
-//     } else {
-//       // Calculate the average rating
-//       let totalRating = 0;
-//       ratings.forEach((rating) => {
-//         totalRating += rating.rating;
-//       });
-//       const averageRating = totalRating / ratings.length;
-
-//       res.json({ averageRating });
-//     }
-//   } catch (error) {
-//     // Handle errors
-//     console.error("Error fetching product ratings:", error);
-//     res.status(500).json({ message: "An error occurred while fetching product ratings" });
-//   }
-// });
-
-
-
-
 export default router;
