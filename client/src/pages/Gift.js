@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import emailjs from 'emailjs-com';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import PaymentGateway from './PaymentGateway';
 // import PayPalCheckout from './PayPalCheckout';
 
 const richTextModules = {
@@ -91,7 +92,7 @@ const GiftCardForm = ({ selectedAmount }) => {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'An error occurred while sending the email.',
+          text: '',
         });
       }
     } catch (error) {
@@ -176,6 +177,16 @@ const GiftCardForm = ({ selectedAmount }) => {
               className="form-input"
             />
           </div>
+          <div style={{marginTop:'4%'}}>
+            <label>Gift Sender Name:</label>
+            <input
+              type="text"
+              value={senderName}
+              onChange={(e) => setSenderName(e.target.value)}
+              className="form-input"
+            />
+          </div>
+          <PaymentGateway/>
           <div style={{marginTop:'2%'}}>
             <label>Recipient Name:</label>
             <input
@@ -198,15 +209,7 @@ const GiftCardForm = ({ selectedAmount }) => {
               )}
           </div>
 
-          <div style={{marginTop:'4%'}}>
-            <label>Gift Sender Name:</label>
-            <input
-              type="text"
-              value={senderName}
-              onChange={(e) => setSenderName(e.target.value)}
-              className="form-input"
-            />
-          </div>
+          
           <div  style={{marginTop:'4%'}}>
             <label>Gift Sender Message:</label>
           
@@ -222,6 +225,7 @@ const GiftCardForm = ({ selectedAmount }) => {
           <div  style={{marginTop:'10%'}}>
           {/* <PayPalCheckout  userId={userID} cost={cost} bookingId={bookingId} bookingType={paymentFor}/> */}
 
+          
           <button type="submit" className="form-button">
             Send Gift Card
           </button>
