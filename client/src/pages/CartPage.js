@@ -15,23 +15,53 @@ const CartPage = () => {
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
   const [loading, setLoading] = useState(false);
+  const [card_id, setCardId] = useState('');
+  const [discount,setDiscount] = useState('');
+  const [status, setStatus]= useState('Issued')
+  const [recipientEmail, setRecipientEmail] = useState('');
+  
+  
   const navigate = useNavigate();
+  // let discount = 500;
 
   //total price
   const totalPrice = () => {
+    
     try {
       let total = 0;
+      let subtotal = 0;
+      let voucherDisc = discount*10000;
+      console.log(voucherDisc);
+
       cart?.map((item) => {
-        total = total + item.price;
+        total = total + item.price ;
       });
-      return total.toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
+      subtotal = total;
+      total = total -voucherDisc;
+      const displayTotal = total < 0 ? 0 : total;
+      console.log('Final total : ', total);
+      // return total.toLocaleString("en-US", {
+      //   style: "currency",
+      //   currency: "USD",
+      // });
+      const formattedTotal = displayTotal.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
       });
+  
+      const formattedSubtotal = subtotal.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      });
+        
+      return { displayTotal: formattedTotal, subtotal: formattedSubtotal };
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      return { total: 'Error', subtotal: 'Error' };
     }
   };
+
+  
   //detele item
   const removeCartItem = (pid) => {
     try {
@@ -44,6 +74,30 @@ const CartPage = () => {
       console.log(error);
     }
   };
+  //get discount
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // setStatus("Issued")
+    // console.log(status);
+    try {
+      const response = await axios.get('/giftVoucher/getVoucherq',{
+        params:{
+          recipientEmail,card_id,status
+        },
+      });
+      setDiscount(response.data.amount);
+
+      console.log('Voucher dtl', response.data.amount);
+      toast.success("Voucher Applied");
+      await axios.put('/giftVoucher/revokeVoucher', {
+        recipientEmail,
+        card_id,
+      });
+    } catch (error) {
+      toast.error("Invalid Voucher");
+      console.error('Error fetching voucher:', error);
+    }
+  }
 
   //get payment gateway token
   const getToken = async () => {
@@ -138,8 +192,36 @@ const CartPage = () => {
             <div className="col-md-6 cart-summary ">
               <h2>Checkout</h2>
               <p>Total | Checkout | Payment</p>
+              <hr />            
+              
+              <h2>Voucher Claim</h2>
+                <form onSubmit={handleSubmit} className="form-section">
+                  <div className="">
+                  <div className="row  w-75 mx-auto">
+                  <label className="w-50 mt-2"> Recipient Email:</label>
+                  <input
+                    className="form-control w-50"
+                    type="text"
+                    value={recipientEmail}
+                    onChange={(e) => setRecipientEmail(e.target.value)}
+                  />
+                </div>
+                <div className="row w-75 mx-auto">
+                  <label className="w-50 mt-2"> Voucher Code:</label>
+                  <input
+                  className="form-control w-50"
+                    type="text"
+                    value={card_id}
+                    onChange={(e) => setCardId(e.target.value)}
+                  />
+                </div>
+                <button className="btn btn-primary w-25 mt-3" type="submit">Claim Voucher</button>
+
+                  </div>
+                </form>
               <hr />
-              <h4>Total : {totalPrice()} </h4>
+              <h4>Sub Total : {totalPrice().subtotal} </h4>
+              <h4>Total : {totalPrice().displayTotal} </h4>
               {auth?.user?.address ? (
                 <>
                   <div className="mb-3">
